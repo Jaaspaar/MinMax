@@ -193,7 +193,7 @@ public class TicTacToe implements GameInterface {
     	}
 
     	//check draw
-    	if(moveCount >= (Math.pow(3, 2) - 1)){
+    	if(moveCount >= (Math.pow(3, 2) )){
     		gameState = States.DRAW;
     	}
     }
@@ -212,6 +212,11 @@ public class TicTacToe implements GameInterface {
 
     public int getOpponentSymbolId() {
         return opponentSymbolId;
+    }
+    
+    @Override
+    public int getBoardSize() {
+       return boardArray.length;
     }
     
     @Override

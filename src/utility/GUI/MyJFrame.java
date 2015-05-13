@@ -12,7 +12,9 @@ import java.awt.event.MouseListener;
 import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import minmax.GameInterface;
 import minmax.games.gomoku.GoMoku;
+import minmax.games.tictactoe.TicTacToe;
 import minmax.games.tictactoe.TicTacToeMove;
 
 /**
@@ -24,7 +26,9 @@ public class MyJFrame extends JFrame {
     
     MyJPanel myJPanel;
     
-    public MyJFrame(int width, int height, int [][] board) {
+    GameInterface gameInit;
+    
+    public MyJFrame(int width, int height, GameInterface game) {
         
         super("Let's play a game!");
         
@@ -36,13 +40,15 @@ public class MyJFrame extends JFrame {
         
         setLocation(200, 10);
         
-        myJPanel = new MyJPanel(board);
+        this.gameInit = game;
+        
+        myJPanel = new MyJPanel(gameInit.getBoardSize());
         
         add(myJPanel);
         
         myJPanel.addMouseListener(new MouseListener() {
             
-            GoMoku game = new GoMoku(false, 1, 2);
+            GameInterface game = gameInit;
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -52,17 +58,17 @@ public class MyJFrame extends JFrame {
                         
                         myJPanel.setRectangleColor(rec, Color.red);
                     
-                        game = (GoMoku) game.getStateFromMove(
+                        game = game.getStateFromMove(
                                 new TicTacToeMove(rec.getBoardRow(), rec.getBoardColumn(),
                                 game.getOpponentSymbolId()));
                     
                         if(!game.isOver()) {
                             System.out.println("minmax in progres..");
-                            minmax.MinMaxAlg.minmax(game, 2, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                            minmax.MinMaxAlg.minmax(game, 12, Integer.MIN_VALUE, Integer.MAX_VALUE);
                             System.out.println("minmax done");
                             myJPanel.setRectangleColor(game.getNextSuggestedMove().getRow(),
                                     game.getNextSuggestedMove().getColumn(), Color.GREEN);
-                            game = (GoMoku) game.getStateFromMove(game.getNextSuggestedMove());
+                            game =  game.getStateFromMove(game.getNextSuggestedMove());
                         }
                         else {
                             printEndText();

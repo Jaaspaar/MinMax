@@ -28,8 +28,9 @@ public class Manager {
         //GoMokuContest contest = new GoMokuContest();
         //contest.beginContest();
         
-        GoMoku game = new GoMoku();
-        new Painter(game.getBoardArray());
+        //GoMoku game = new GoMoku();
+        TicTacToe game = new TicTacToe(false, 1, 2);
+        new Painter(game);
         
     }
     

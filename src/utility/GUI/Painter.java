@@ -9,6 +9,7 @@ import java.awt.EventQueue;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JFrame;
+import minmax.GameInterface;
 import sun.org.mozilla.javascript.internal.Token;
 
 /**
@@ -24,11 +25,11 @@ public class Painter {
     
     MyJFrame myJFrame;
     
-    int[][] board;
+    GameInterface game;
     
-    public Painter(int [][] board) {
+    public Painter(GameInterface game) {
         
-        this.board = board;
+        this.game = game;
         
         prepareScene();
     }
@@ -40,7 +41,7 @@ public class Painter {
 			@Override
 			public void run() {
 				myJFrame = new MyJFrame(I_SCENE_WIDTH,
-                                        I_SCENE_HEIGHT, board);
+                                        I_SCENE_HEIGHT, game);
 			}
 		});
         

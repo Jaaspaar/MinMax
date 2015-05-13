@@ -273,8 +273,14 @@ public class GoMoku implements GameInterface{
         return playerSymbolId;
     }
 
+    @Override
     public int getOpponentSymbolId() {
         return opponentSymbolId;
+    }
+    
+    @Override
+    public int getBoardSize() {
+       return boardArray.length;
     }
     
     @Override

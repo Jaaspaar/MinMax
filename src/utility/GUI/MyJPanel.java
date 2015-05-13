@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  */
 public class MyJPanel extends JPanel{
     
-    int[][] board;
+    int boardSize;
     
     public static final int BOARD_SIZE = 500;
     
@@ -30,10 +30,10 @@ public class MyJPanel extends JPanel{
     
     private final List<MyRectangle> rectanglesList;
     
-    public MyJPanel(int [][] board) {
+    public MyJPanel(int boardSize) {
             
         setBackground(Color.white);
-        this.board = board;
+        this.boardSize = boardSize;
         rectanglesList = new ArrayList<>(15);
         prepareScene();
     }
@@ -51,8 +51,8 @@ public class MyJPanel extends JPanel{
     
     private void prepareScene() {
      
-        for(int i = 1; i < board.length+1; i++) {
-            for(int j = 1; j < board.length+1; j++) {
+        for(int i = 1; i < boardSize+1; i++) {
+            for(int j = 1; j < boardSize+1; j++) {
                 rectanglesList.add(new MyRectangle((SINGLE_GRID_SIZE*i)+i,
                         (SINGLE_GRID_SIZE*j)+j,
                         SINGLE_GRID_SIZE, SINGLE_GRID_SIZE, (j-1), (i-1)));

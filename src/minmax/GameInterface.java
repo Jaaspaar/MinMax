@@ -31,4 +31,8 @@ public interface GameInterface {
     
     public void setNextSuggestedMove(Move move);
     
+    public int getOpponentSymbolId();
+    
+    public int getBoardSize();
+    
 }
