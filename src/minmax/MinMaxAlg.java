@@ -145,35 +145,69 @@ public class MinMaxAlg {
             
     }
     
-    public static int minmax(GameInterface game,int depth,
-                int recurrency, int alpha, int beta) {
+    public static int minmaxKiller(GameInterface game, int depth, int alpha, int beta) {
         if(game.isOver() || depth == 0)
-            return score(game, recurrency);
+            return score(game);
+        
+        int score;
+        
+        Move killer = game.getKiller(depth);
+        if(killer != null) {
+            if(game.isLegalMove(killer)) {
+                GameInterface possibleGame = game.getStateFromMove(killer);
+                score = minmaxKiller(possibleGame, (depth-1), alpha, beta);
+                if(game.isPlayerTurn()) {
+                    if(score > alpha) {
+                        alpha = score;
+                    }
+                    if(alpha >= beta) {
+                        //game.setKiller(depth, killer);
+                        game.setNextSuggestedMove(killer);
+                        return game.isPlayerTurn() ? alpha : beta;
+                    }
+                }
+                else {
+                    if(score < beta) {
+                        beta = score;
+                    }
+                    if(alpha >= beta) {
+                        //game.setKiller(depth, killer);
+                        game.setNextSuggestedMove(killer);
+                        return game.isPlayerTurn() ? alpha : beta;
+                    }
+                       
+                }
+                
+            }
+        }
         
         ArrayList<Move> movesList;
         movesList = (ArrayList<Move>) game.getAllAvaibleMoves();
         int moveIndex = 0;
         int i = 0;
         
-        int score;
         for(Move m : movesList) {
             GameInterface possibleGame = game.getStateFromMove(m);
-            score = minmax(possibleGame, (depth-1), ++recurrency, alpha, beta);
+            score = minmaxKiller(possibleGame, (depth-1), alpha, beta);
             if(game.isPlayerTurn()) {
                 if(score > alpha) {
                     alpha = score;
                     moveIndex = i;
                 }
-                if(alpha >= beta)
+                if(alpha >= beta) {
+                    game.setKiller(depth, m);
                     break;
+                }
             }
             else {
                 if(score < beta) {
                     beta = score;
                     moveIndex = i;
                 }
-                if(alpha >= beta)
+                if(alpha >= beta) {
+                    game.setKiller(depth, m);
                     break;
+                }
             }
             i++;
         }
@@ -185,6 +219,7 @@ public class MinMaxAlg {
             
     }
     
+    
     private static int score(GameInterface game) {
         if(game.isPlayerAWinner())
             return 10;
@@ -194,14 +229,6 @@ public class MinMaxAlg {
             return 0;
     }
     
-    private static int score(GameInterface game, int recurrency) {
-        if(game.isPlayerAWinner())
-            return 10 - recurrency;
-        else if(game.isOppoentAWinner())
-            return recurrency -10;
-        else
-            return 0;
-    }
     
     private static int getIndexOfLargest(List<Integer> list) {
         int indexOfLargest = 0;

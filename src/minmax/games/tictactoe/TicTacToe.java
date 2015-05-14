@@ -8,6 +8,7 @@ package minmax.games.tictactoe;
 import minmax.games.tictactoe.TicTacToeMove;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import minmax.GameInterface;
@@ -39,6 +40,8 @@ public class TicTacToe implements GameInterface {
     
     private States gameState;
     
+    private HashMap<Integer, Move> killersMap;
+    
     public TicTacToe() {
         this.boardArray = new int[3][3];
         this.playerTurn = true;
@@ -48,6 +51,7 @@ public class TicTacToe implements GameInterface {
         this.nextSuggestedMove = new TicTacToeMove(0, 0, 0);
         this.moveCount = 0;
         this.gameState = States.IN_PROGRESS;
+        killersMap = new HashMap<>();
     }
     
     public TicTacToe(boolean playerStarts, int playerSymbolId, int opponentSymbolId ) {
@@ -59,6 +63,7 @@ public class TicTacToe implements GameInterface {
         this.nextSuggestedMove = new TicTacToeMove(0, 0, 0);
         this.moveCount = 0;
         this.gameState = States.IN_PROGRESS;
+        killersMap = new HashMap<>();
     }
 
     public TicTacToe(int [][] boardArray, boolean playerTurn, int playerSymbolId,
@@ -72,6 +77,7 @@ public class TicTacToe implements GameInterface {
         this.moveCount = moveCount;
         this.nextSuggestedMove = nextSuggestedMove;
         this.gameState = States.IN_PROGRESS;
+        killersMap = new HashMap<>();
     }
 
     @Override
@@ -133,6 +139,16 @@ public class TicTacToe implements GameInterface {
     @Override
     public void setNextSuggestedMove(Move move) {
         nextSuggestedMove = (TicTacToeMove) move;
+    }
+    
+    @Override
+    public Move getKiller(int depth) {
+        return killersMap.get(depth);
+    }
+    
+    @Override
+    public void setKiller(int depth, Move move) {
+        killersMap.put(depth, move);
     }
 
     private void checkState() {
@@ -217,6 +233,11 @@ public class TicTacToe implements GameInterface {
     @Override
     public int getBoardSize() {
        return boardArray.length;
+    }
+    
+    @Override
+    public boolean isLegalMove(Move move) {
+        return boardArray[move.getRow()][move.getColumn()] == symbols[0];
     }
     
     @Override

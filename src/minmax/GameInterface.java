@@ -35,4 +35,10 @@ public interface GameInterface {
     
     public int getBoardSize();
     
+    public boolean isLegalMove(Move move);
+    
+    public Move getKiller(int depth);
+    
+    public void setKiller(int depth, Move move);
+    
 }

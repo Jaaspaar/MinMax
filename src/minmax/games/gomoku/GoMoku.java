@@ -6,6 +6,7 @@
 package minmax.games.gomoku;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import minmax.GameInterface;
 import minmax.Move;
@@ -41,6 +42,8 @@ public class GoMoku implements GameInterface{
     
     private static int N = 15;
     
+    private HashMap<Integer, Move> killersMap;
+    
     public GoMoku() {
         this.boardArray = new int[N][N];
         this.playerTurn = true;
@@ -50,6 +53,7 @@ public class GoMoku implements GameInterface{
         this.nextSuggestedMove = new TicTacToeMove(0, 0, 0);
         this.moveCount = 0;
         this.gameState = States.IN_PROGRESS;
+        killersMap = new HashMap<>();
     }
     
     public GoMoku(boolean playerStarts, int playerSymbolId, int opponentSymbolId ) {
@@ -61,11 +65,12 @@ public class GoMoku implements GameInterface{
         this.nextSuggestedMove = new TicTacToeMove(0, 0, 0);
         this.moveCount = 0;
         this.gameState = States.IN_PROGRESS;
+        killersMap = new HashMap<>();
     }
 
     public GoMoku(int [][] boardArray, boolean playerTurn, int playerSymbolId,
             int opponentSymbolId, TicTacToeMove lastMove, int moveCount, 
-            TicTacToeMove nextSuggestedMove) {
+            TicTacToeMove nextSuggestedMove, HashMap killersMap) {
         this.boardArray = boardArray;
         this.playerTurn = playerTurn;
         this.playerSymbolId = playerSymbolId;
@@ -74,6 +79,7 @@ public class GoMoku implements GameInterface{
         this.moveCount = moveCount;
         this.nextSuggestedMove = nextSuggestedMove;
         this.gameState = States.IN_PROGRESS;
+        this.killersMap = killersMap;
     }
 
     @Override
@@ -82,7 +88,8 @@ public class GoMoku implements GameInterface{
         nextBoard[((TicTacToeMove)move).getRow()][((TicTacToeMove)move).getColumn()]
                 = ((TicTacToeMove)move).getSymbolId();
         return new GoMoku(nextBoard, !playerTurn, playerSymbolId, 
-                opponentSymbolId, (TicTacToeMove)move, (moveCount+1), nextSuggestedMove);
+                opponentSymbolId, (TicTacToeMove)move, (moveCount+1), nextSuggestedMove,
+        killersMap);
     }
 
     @Override
@@ -136,6 +143,21 @@ public class GoMoku implements GameInterface{
     public void setNextSuggestedMove(Move move) {
         nextSuggestedMove = (TicTacToeMove) move;
     }
+    
+    @Override
+    public boolean isLegalMove(Move move) {
+        return boardArray[move.getRow()][move.getColumn()] == 0;
+    }
+    
+    @Override
+    public Move getKiller(int depth) {
+        return killersMap.get(depth);
+    }
+    
+    @Override
+    public void setKiller(int depth, Move move) {
+        killersMap.put(depth, move);
+    }
 
     private void checkState() {
 
@@ -149,8 +171,11 @@ public class GoMoku implements GameInterface{
     		if(boardArray[x][i] == s) {
                         if(lastMatchIndex < 0)
                             lastMatchIndex = i;
-                        else if(lastMatchIndex != i - 1)
-                            break;
+                        else if(lastMatchIndex != i - 1) {
+                            matchCount = 1;
+                            lastMatchIndex = i;
+                            continue;
+                        }
     			matchCount++;
                         lastMatchIndex = i;
                 }
@@ -172,8 +197,11 @@ public class GoMoku implements GameInterface{
     		if(boardArray[i][y] == s){
                         if(lastMatchIndex < 0)
                             lastMatchIndex = i;
-                        else if(lastMatchIndex != i - 1)
-                            break;
+                        else if(lastMatchIndex != i - 1) {
+                            matchCount = 1;
+                            lastMatchIndex = i;
+                            continue;
+                        }
     			matchCount++;
                         lastMatchIndex = i;
                 }
@@ -196,19 +224,62 @@ public class GoMoku implements GameInterface{
                     if(matchCount == 5)
                         break;
                     matchCount = 0;
+                    lastMatchIndex = -1;
                     //for(int j = i; j < n; j++) {
                         int j = i;
                         for(int k = 0; k < n & j < n; k++) {
                             if(boardArray[j][k] == s){
                             if(lastMatchIndex < 0)
                                 lastMatchIndex = j;
-                            else if(lastMatchIndex != j - 1)
-                                break;
+                            else if(lastMatchIndex != j - 1) {
+                                matchCount = 1;
+                                lastMatchIndex = j;
+                                j++;
+                                continue;
+                            }
                             matchCount++;
                             lastMatchIndex = j;
 
                             }
                             j++;
+                        }
+                    //
+    		}
+    	//}
+        if(matchCount == 5){
+    			 //reporting win for s
+                         if(s == playerSymbolId)
+                             gameState = States.PLAYER_WON;
+                         else if(s == opponentSymbolId)
+                             gameState = States.OPPONENT_WON;
+    	}
+        //check diag upper part
+        matchCount = 0;
+        lastMatchIndex = -1;
+    	//if(x == y){
+    		//we're on a diagonal
+    		for(int i = 0; i < n; i++){
+                    if(matchCount == 5)
+                        break;
+                    matchCount = 0;
+                    lastMatchIndex = -1;
+                    //for(int j = i; j < n; j++) {
+                        int k = i;
+                        for(int j = 0; k < n & j < n; j++) {
+                            if(boardArray[j][k] == s){
+                            if(lastMatchIndex < 0)
+                                lastMatchIndex = j;
+                            else if(lastMatchIndex != j - 1) {
+                                matchCount = 1;
+                                lastMatchIndex = j;
+                                k++;
+                                continue;
+                            }
+                            matchCount++;
+                            lastMatchIndex = j;
+
+                            }
+                            k++;
                         }
                     //
     		}
@@ -229,13 +300,18 @@ public class GoMoku implements GameInterface{
                 if(matchCount == 5)
                         break;
                 matchCount = 0;
+                lastMatchIndex = -1;
                 int j = i;
                 for(int k = 0; k < n & j < n; k++) {
                     if(boardArray[j][(n-1)-k] == s){
                             if(lastMatchIndex < 0)
                                 lastMatchIndex = j;
-                            else if(lastMatchIndex != j - 1)
-                                break;
+                            else if(lastMatchIndex != j - 1) {
+                                matchCount = 1;
+                                lastMatchIndex = j;
+                                j++;
+                                continue;
+                            }
                             matchCount++;
                             lastMatchIndex = j;
                     }
@@ -250,9 +326,43 @@ public class GoMoku implements GameInterface{
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
     	}
+            //check anti diag, upper part
+        matchCount = 0;
+        lastMatchIndex = -1;
+    	for(int i = 0;i<n;i++){
+            //for(int j = i; j < n; j++) {
+                if(matchCount == 5)
+                        break;
+                matchCount = 0;
+                lastMatchIndex = -1;
+                int k = i;
+                for(int j = 0; k < n & j < n; j++) {
+                    if(boardArray[j][(n-1)-k] == s){
+                            if(lastMatchIndex < 0)
+                                lastMatchIndex = j;
+                            else if(lastMatchIndex != j - 1) {
+                                matchCount = 1;
+                                lastMatchIndex = j;
+                                k++;
+                                continue;
+                            }
+                            matchCount++;
+                            lastMatchIndex = j;
+                    }
+                    k++;
+                }
+            //}
+    	}
+        if(matchCount == 5){
+    			 //reporting win for s
+                         if(s == playerSymbolId)
+                             gameState = States.PLAYER_WON;
+                         else if(s == opponentSymbolId)
+                             gameState = States.OPPONENT_WON;
+    	}
 
     	//check draw
-    	if(moveCount >= ((n*n) - 1)){
+    	if(moveCount >= ((n*n))){
     		gameState = States.DRAW;
     	}
     }

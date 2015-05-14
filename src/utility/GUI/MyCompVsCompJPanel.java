@@ -6,24 +6,22 @@
 package utility.GUI;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import minmax.GameInterface;
 
 /**
  *
  * @author Łukasz
  */
-public class MyJPanel extends JPanel implements ActionListener {
+public class MyCompVsCompJPanel extends JPanel implements ActionListener{
     
     int boardSize;
     
@@ -35,7 +33,7 @@ public class MyJPanel extends JPanel implements ActionListener {
     
     Timer timer;
     
-    public MyJPanel(int boardSize) {
+    public MyCompVsCompJPanel(int boardSize, GameInterface game) {
             
         setBackground(Color.white);
         this.boardSize = boardSize;
@@ -131,5 +129,5 @@ public class MyJPanel extends JPanel implements ActionListener {
         if(e.getSource()==timer)
             repaint();
     }
-
+    
 }

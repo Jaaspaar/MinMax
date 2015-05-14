@@ -64,7 +64,7 @@ public class MyJFrame extends JFrame {
                     
                         if(!game.isOver()) {
                             System.out.println("minmax in progres..");
-                            minmax.MinMaxAlg.minmax(game, 12, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                            minmax.MinMaxAlg.minmaxKiller(game, 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
                             System.out.println("minmax done");
                             myJPanel.setRectangleColor(game.getNextSuggestedMove().getRow(),
                                     game.getNextSuggestedMove().getColumn(), Color.GREEN);

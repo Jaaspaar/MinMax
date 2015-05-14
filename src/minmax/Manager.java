@@ -5,7 +5,9 @@
  */
 package minmax;
 
+import minmax.games.general.CompVsComp;
 import minmax.games.gomoku.GoMoku;
+import minmax.games.gomoku.GoMokuCompVsComp;
 import minmax.games.gomoku.GoMokuContest;
 import minmax.games.tictactoe.TicTacToeContest;
 import minmax.games.tictactoe.TicTacToe;
@@ -18,6 +20,9 @@ import utility.GUI.Painter;
  * @author Łukasz
  */
 public class Manager {
+    
+    public static int LAB_ITERATIONS = 1;
+    public static int DEPTH = 5;
 
     public Manager() {
         //testGoMoku();
@@ -28,10 +33,52 @@ public class Manager {
         //GoMokuContest contest = new GoMokuContest();
         //contest.beginContest();
         
-        //GoMoku game = new GoMoku();
-        TicTacToe game = new TicTacToe(false, 1, 2);
+        GoMoku game = new GoMoku(false, 1, 2);
+        //TicTacToe game = new TicTacToe(false, 1, 2);
         new Painter(game);
         
+//        CompVsComp contest = new GoMokuCompVsComp();
+//        long startTime = System.currentTimeMillis();
+//        contest.beginContest(1);
+//        long durationTime = System.currentTimeMillis() - startTime;
+//        System.out.println("dutation time min-max: "+durationTime);
+        
+//        contest = new GoMokuCompVsComp();
+//        startTime = System.currentTimeMillis();
+//        contest.beginContest(1);
+//        durationTime = System.currentTimeMillis() - startTime;
+//        System.out.println("dutation time alpha-beta: "+durationTime);
+        //LabTesting();
+        
+    }
+    
+    private void LabTesting() {
+        int MMsum = 0;
+//        for(int i = 0; i < LAB_ITERATIONS; i++) {
+//            CompVsComp contest = new GoMokuCompVsComp();
+//            long startTime = System.currentTimeMillis();
+//            contest.beginContest(DEPTH);
+//            MMsum += System.currentTimeMillis() - startTime;
+//        }
+
+        int ABsum = 0;
+//        for(int i = 0; i < LAB_ITERATIONS; i++) {
+//            CompVsComp contest = new GoMokuCompVsComp();
+//            long startTime = System.currentTimeMillis();
+//            contest.beginContest(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
+//            ABsum += System.currentTimeMillis() - startTime;
+//        }
+        
+        int KillerSum = 0;
+        for(int i = 0; i < LAB_ITERATIONS; i++) {
+            CompVsComp contest = new GoMokuCompVsComp();
+            long startTime = System.currentTimeMillis();
+            contest.beginContestKiller(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            KillerSum += System.currentTimeMillis() - startTime;
+        }
+        System.out.println("avg dutation time min-max: "+MMsum/LAB_ITERATIONS);
+        System.out.println("avg dutation time alpha-beta: "+ABsum/LAB_ITERATIONS);
+        System.out.println("avg dutation time alpha-beta killer: "+KillerSum/LAB_ITERATIONS);
     }
     
     private void test() {
