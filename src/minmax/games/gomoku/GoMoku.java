@@ -179,6 +179,12 @@ public class GoMoku implements GameInterface{
     			matchCount++;
                         lastMatchIndex = i;
                 }
+                else {
+                    if(matchCount == 5)
+                        break;
+                    matchCount = 0;
+                    lastMatchIndex = -1;
+                }
     		
     	}
         
@@ -188,6 +194,7 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
 
     	//check row
@@ -205,6 +212,12 @@ public class GoMoku implements GameInterface{
     			matchCount++;
                         lastMatchIndex = i;
                 }
+                else {
+                    if(matchCount == 5)
+                        break;
+                    matchCount = 0;
+                    lastMatchIndex = -1;
+                }
     	}
         
         if(matchCount == 5){
@@ -213,6 +226,7 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
 
     	//check diag
@@ -252,6 +266,7 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
         //check diag upper part
         matchCount = 0;
@@ -290,6 +305,7 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
 
             //check anti diag (thanks rampion)
@@ -325,6 +341,7 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
             //check anti diag, upper part
         matchCount = 0;
@@ -359,12 +376,20 @@ public class GoMoku implements GameInterface{
                              gameState = States.PLAYER_WON;
                          else if(s == opponentSymbolId)
                              gameState = States.OPPONENT_WON;
+                         return;
     	}
 
     	//check draw
     	if(moveCount >= ((n*n))){
     		gameState = States.DRAW;
     	}
+    }
+    
+    private void getWinner(int s) {
+        if(s == playerSymbolId)
+            gameState = States.PLAYER_WON;
+        else if(s == opponentSymbolId)
+            gameState = States.OPPONENT_WON;
     }
     
     private int [][] getDeepCopyOfBoard() {
