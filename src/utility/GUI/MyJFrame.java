@@ -56,7 +56,7 @@ public class MyJFrame extends JFrame {
                     MyRectangle rec = myJPanel.checkCollision(e.getX(), e.getY());
                     if(rec != null && !rec.isOccupied()) {
                         
-                        myJPanel.setRectangleColor(rec, Color.red);
+                        myJPanel.setRectangleColor(rec, Color.blue);
                     
                         game = game.getStateFromMove(
                                 new TicTacToeMove(rec.getBoardRow(), rec.getBoardColumn(),

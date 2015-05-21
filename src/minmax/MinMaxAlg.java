@@ -8,6 +8,7 @@ package minmax;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import minmax.games.checkers.Checkers;
 
 /**
  *
@@ -221,6 +222,8 @@ public class MinMaxAlg {
     
     
     private static int score(GameInterface game) {
+        if("Checkers".equals(game.getClass().getSimpleName()))
+            return ((Checkers)game).score();
         if(game.isPlayerAWinner())
             return 10;
         else if(game.isOppoentAWinner())
